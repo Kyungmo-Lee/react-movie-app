@@ -8,7 +8,6 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.2.1",
     "bootstrap": "^5.2.3",
-    "gh-pages": "^4.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.0",
     "react-bootstrap-icons": "^1.10.2",
@@ -44,5 +43,8 @@
     ]
   },
   "proxy": "https://openapi.naver.com",
-  "homepage": "https://Kyungmo-Lee.github.io/react-movie-app"
+  "homepage": "https://Kyungmo-Lee.github.io/react-movie-app",
+  "devDependencies": {
+    "gh-pages": "^4.0.0"
+  }
 }
