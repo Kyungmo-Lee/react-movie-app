@@ -43,7 +43,7 @@
     ]
   },
   "proxy": "https://openapi.naver.com",
-  "homepage": "https://Kyungmo-Lee.github.io/react-movie-app/",
+  "homepage": "https://Kyungmo-Lee.github.io/test",
   "devDependencies": {
     "gh-pages": "^4.0.0"
   }

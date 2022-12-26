@@ -1,52 +1,44 @@
-import { useCallback, useEffect, useState } from "react";
-import { Container, Col, Row } from "react-bootstrap";
+import { useEffect, useState } from "react";
 import Movie from "../components/Movie";
+import styles from "./Home.module.css";
 
 function Home() {
-  function makeDate() {
-    const today = new Date();
-    const yesterday = new Date(today.setDate(today.getDate() - 1));
-    return yesterday.toLocaleDateString().split(". ").join("").slice(0, -1);
-  }
   const [loading, setLoading] = useState(true);
-  const [movies, setMovies] = useState({});
-  const getMovies = useCallback(async () => {
-    const apis = {
-      kobis_api_key: process.env.REACT_APP_KOBIS_API_KEY,
-      naver_client_id: process.env.REACT_APP_CLIENT_ID,
-      naver_client_secret: process.env.REACT_APP_CLIENT_SECRET,
-    };
-
+  const [movies, setMovies] = useState([]);
+  const getMovies = async () => {
     const json = await (
       await fetch(
-        `http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=${
-          apis.kobis_api_key
-        }&targetDt=${makeDate()}&itemPerPage=10`
+        `https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`
       )
     ).json();
-
-    setMovies(json.boxOfficeResult.dailyBoxOfficeList);
+    setMovies(json.data.movies);
     setLoading(false);
-  }, []);
+  };
   useEffect(() => {
     getMovies();
-  }, [getMovies]);
-  console.log(movies);
+  }, []);
   return (
-    <Container>
+    <div className={styles.container}>
       {loading ? (
-        <h1>Loading...</h1>
+        <div className={styles.loader}>
+          <span>Loading...</span>
+        </div>
       ) : (
-        <Row xs={1} md={4} className="g-4">
+        <div className={styles.movies}>
           {movies.map((movie) => (
-            <Col key={movie.movieNm}>
-              <Movie id={movie.movieNm} title={movie.movieNm} />
-            </Col>
+            <Movie
+              key={movie.id}
+              id={movie.id}
+              year={movie.year}
+              coverImg={movie.medium_cover_image}
+              title={movie.title}
+              summary={movie.summary}
+              genres={movie.genres}
+            />
           ))}
-        </Row>
+        </div>
       )}
-    </Container>
+    </div>
   );
 }
-
 export default Home;

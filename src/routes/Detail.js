@@ -1,48 +1,39 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Movie from "../components/Movie";
-import axios from "axios";
 
 function Detail() {
   const { id } = useParams();
+  const [detail, setDetail] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const [movie, setMovie] = useState({});
+  const getMovie = async () => {
+    const json = await (
+      await fetch(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
+    ).json();
+    setLoading(false);
+    setDetail(json.data.movie);
+  };
 
   useEffect(() => {
-    const apis = {
-      kobis_api_key: process.env.REACT_APP_KOBIS_API_KEY,
-      naver_client_id: process.env.REACT_APP_CLIENT_ID,
-      naver_client_secret: process.env.REACT_APP_CLIENT_SECRET,
-    };
+    getMovie();
+  }, []);
 
-    const config = {
-      method: "get",
-      url: `/v1/search/movie.json?query=${encodeURIComponent(id)}`,
-      headers: {
-        "X-Naver-Client-Id": apis.naver_client_id,
-        "X-Naver-Client-Secret": apis.naver_client_secret,
-      },
-    };
-
-    axios(config)
-      .then(function (response) {
-        setMovie(response.data.items[0]);
-        setLoading(false);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, [id]);
-
-  console.log(movie);
   return (
     <div>
       {loading ? (
         <h1>Loading...</h1>
-      ) : movie.title ? (
-        <Movie id={id} title={id} />
-      ) : null}
+      ) : (
+        <Movie
+          key={detail.id}
+          id={detail.id}
+          year={detail.year}
+          coverImg={detail.background_image_origin}
+          title={detail.title}
+          summary={detail.description_full}
+          genres={detail.genres}
+        />
+      )}
     </div>
   );
 }
